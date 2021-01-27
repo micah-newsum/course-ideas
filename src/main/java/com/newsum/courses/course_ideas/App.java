@@ -22,7 +22,7 @@ public class App
     	Spark.before((req, res) -> {
     		if (req.cookie("username") != null)
     		{
-    			req.attribute(req.cookie("username"));
+    			req.attribute("username", req.cookie("username"));
     		}
     	});
     	
@@ -56,6 +56,14 @@ public class App
     		String title = req.queryParams("title");
     		CourseIdea idea = new CourseIdea(title,req.attribute("username"));
     		courseIdeaDAO.add(idea);
+    		res.redirect("/ideas");
+			return null;
+			});
+    	
+    	Spark.post("/ideas/:slug/vote", (req, res) -> {    		
+    		CourseIdea idea = courseIdeaDAO.findBySlug(req.params("slug"));
+    		String username = req.attribute("username");
+    		idea.addVoter(req.attribute("username"));
     		res.redirect("/ideas");
 			return null;
 			});
