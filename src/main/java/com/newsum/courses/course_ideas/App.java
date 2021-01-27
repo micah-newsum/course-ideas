@@ -12,10 +12,6 @@ import spark.ModelAndView;
 import spark.Spark;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
