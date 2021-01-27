@@ -21,5 +21,13 @@ public class SimpleCourseIdeaDAO implements CourseIdeaDAO
 	public boolean add(CourseIdea idea) {
 		return ideas.add(idea);
 	}
+
+	@Override
+	public CourseIdea findBySlug(String slug) {
+		return ideas.stream()
+					.filter(idea -> idea.getSlug().equals(slug))
+					.findFirst()
+				    .orElseThrow(NotFoundException::new);
+	}
 	
 }
