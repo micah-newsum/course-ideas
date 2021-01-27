@@ -5,6 +5,7 @@
     <title>Hello students</title>
 </head>
 <body>
+{{#partial "content"}}
     {{#if username}}
         <h1>Welcome {{username}}!</h1>
     {{else}}
@@ -16,5 +17,8 @@
         <button>Sign in</button>
     </form>
     {{/if}}
+{{/partial}}
 </body>
 </html>
+
+{{>base.hbs}}

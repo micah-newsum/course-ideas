@@ -4,28 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-<<<<<<< Updated upstream
-=======
 import com.newsum.courses.model.CourseIdea;
 import com.newsum.courses.model.CourseIdeaDAO;
 import com.newsum.courses.model.SimpleCourseIdeaDAO;
 
->>>>>>> Stashed changes
 import spark.ModelAndView;
 import spark.Spark;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
-
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
     {
-<<<<<<< Updated upstream
-=======
     	Spark.staticFileLocation("public"); //tells web server to look in this directory if static files not found
     	CourseIdeaDAO courseIdeaDAO = new SimpleCourseIdeaDAO();
     	
@@ -44,7 +34,6 @@ public class App
     		}
     	});
     	
->>>>>>> Stashed changes
     	Spark.get("/", (req, res) -> {
 							    		Map<String,String> model = new HashMap<>();
 								    	String userName = req.attribute("username");
