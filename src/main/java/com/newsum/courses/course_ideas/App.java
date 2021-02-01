@@ -68,7 +68,7 @@ public class App
 			return null;
 			});
     	
-    	Spark.get("ideas/:slug", (req, res) -> {
+    	Spark.get("idea/:slug", (req, res) -> {
 										    		Map<String, Object> model = new HashMap<>();
 										    		model.put("idea", courseIdeaDAO.findBySlug(req.params("slug")));
 										    		return new ModelAndView(model,"idea.hbs");
