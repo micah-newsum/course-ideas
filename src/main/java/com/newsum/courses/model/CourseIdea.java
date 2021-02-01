@@ -1,7 +1,9 @@
 package com.newsum.courses.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.github.slugify.Slugify;
@@ -50,5 +52,9 @@ public class CourseIdea
 	
 	public String getSlug() {
 		return slug;
+	}
+	
+	public List<String> getVoters(){
+		return new ArrayList<>(voters);
 	}
 }

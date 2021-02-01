@@ -69,6 +69,12 @@ public class App
 			return null;
 			});
     	
+      Spark.get("idea/:slug", (req, res) -> {
+										    		Map<String, Object> model = new HashMap<>();
+										    		model.put("idea", courseIdeaDAO.findBySlug(req.params("slug")));
+										    		return new ModelAndView(model,"idea.hbs");
+    										   }, new HandlebarsTemplateEngine());
+      
     	//catches 404 exception
     	Spark.exception(NotFoundException.class, (exc, req, res) -> {
     		res.status(404);
