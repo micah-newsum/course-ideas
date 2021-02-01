@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.newsum.courses.model.CourseIdea;
 import com.newsum.courses.model.CourseIdeaDAO;
+import com.newsum.courses.model.NotFoundException;
 import com.newsum.courses.model.SimpleCourseIdeaDAO;
 
 import spark.ModelAndView;
@@ -67,5 +68,13 @@ public class App
     		res.redirect("/ideas");
 			return null;
 			});
+    	
+    	//catches 404 exception
+    	Spark.exception(NotFoundException.class, (exc, req, res) -> {
+    		res.status(404);
+    		HandlebarsTemplateEngine engine = new HandlebarsTemplateEngine();
+    		String html = engine.render(new ModelAndView(null,"not-found.hbs"));
+    		res.body(html);
+    	});
     }
 }
