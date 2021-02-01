@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.newsum.courses.model.CourseIdea;
 import com.newsum.courses.model.CourseIdeaDAO;
+import com.newsum.courses.model.NotFoundException;
 import com.newsum.courses.model.SimpleCourseIdeaDAO;
 
 import spark.ModelAndView;
@@ -68,10 +69,18 @@ public class App
 			return null;
 			});
     	
-    	Spark.get("idea/:slug", (req, res) -> {
+      Spark.get("idea/:slug", (req, res) -> {
 										    		Map<String, Object> model = new HashMap<>();
 										    		model.put("idea", courseIdeaDAO.findBySlug(req.params("slug")));
 										    		return new ModelAndView(model,"idea.hbs");
     										   }, new HandlebarsTemplateEngine());
+      
+    	//catches 404 exception
+    	Spark.exception(NotFoundException.class, (exc, req, res) -> {
+    		res.status(404);
+    		HandlebarsTemplateEngine engine = new HandlebarsTemplateEngine();
+    		String html = engine.render(new ModelAndView(null,"not-found.hbs"));
+    		res.body(html);
+    	});
     }
 }
