@@ -10,12 +10,15 @@ import com.newsum.courses.model.NotFoundException;
 import com.newsum.courses.model.SimpleCourseIdeaDAO;
 
 import spark.ModelAndView;
+import spark.Request;
 import spark.Spark;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 public class App 
 {
-    public static void main( String[] args )
+    private static final String FLASH_MESSAGE_KEY = "flash_message";
+
+	public static void main( String[] args )
     {
     	Spark.staticFileLocation("public"); //tells web server to look in this directory if static files not found
     	CourseIdeaDAO courseIdeaDAO = new SimpleCourseIdeaDAO();
@@ -48,8 +51,9 @@ public class App
     										});
     	
     	Spark.get("/ideas", (req, res) -> {
-    		Map<String,List<CourseIdea>> model = new HashMap<>();
+    		Map<String,Object> model = new HashMap<>();
 			model.put("ideas", courseIdeaDAO.findAll());
+			model.put("flashMessage", getFlashMessage(req));
 			return new ModelAndView(model,"ideas.hbs");
 			}, new HandlebarsTemplateEngine());
     	
@@ -64,7 +68,10 @@ public class App
     	Spark.post("/ideas/:slug/vote", (req, res) -> {    		
     		CourseIdea idea = courseIdeaDAO.findBySlug(req.params("slug"));
     		String username = req.attribute("username");
-    		idea.addVoter(req.attribute("username"));
+    		boolean added = idea.addVoter(req.attribute("username"));
+    		if (added) {
+    			setFlashMessage(req,"Thanks for your vote!");
+    		}
     		res.redirect("/ideas");
 			return null;
 			});
@@ -83,4 +90,18 @@ public class App
     		res.body(html);
     	});
     }
+
+	private static void setFlashMessage(Request req, String message) {
+		req.session().attribute(FLASH_MESSAGE_KEY,message);
+	}
+	
+	private static String getFlashMessage(Request req) {
+		if (req.session(false) == null) {
+			return null;
+		}
+		if (!req.session().attributes().contains(FLASH_MESSAGE_KEY)) {
+			return null;
+		}
+		return (String) req.session().attribute(FLASH_MESSAGE_KEY);
+	}
 }
