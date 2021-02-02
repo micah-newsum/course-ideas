@@ -33,6 +33,7 @@ public class App
     	Spark.before("/ideas", (req, res) -> {
     		if (req.cookie("username") == null)
     		{
+    			setFlashMessage(req, "Whoops, please sign in first!");
     			res.redirect("/");
     			Spark.halt();
     		}
@@ -42,6 +43,7 @@ public class App
 							    		Map<String,String> model = new HashMap<>();
 								    	String userName = req.attribute("username");
 										model.put("username", userName);
+										model.put("flashMessage",captureFlashMessage(req));
     									return new ModelAndView(model,"index.hbs");
     								}, new HandlebarsTemplateEngine());
     	Spark.post("/sign-in", (req, res) -> {
@@ -53,7 +55,7 @@ public class App
     	Spark.get("/ideas", (req, res) -> {
     		Map<String,Object> model = new HashMap<>();
 			model.put("ideas", courseIdeaDAO.findAll());
-			model.put("flashMessage", getFlashMessage(req));
+			model.put("flashMessage", captureFlashMessage(req));
 			return new ModelAndView(model,"ideas.hbs");
 			}, new HandlebarsTemplateEngine());
     	
@@ -71,6 +73,8 @@ public class App
     		boolean added = idea.addVoter(req.attribute("username"));
     		if (added) {
     			setFlashMessage(req,"Thanks for your vote!");
+    		} else {
+    			setFlashMessage(req,"You already voted!");
     		}
     		res.redirect("/ideas");
 			return null;
@@ -103,5 +107,13 @@ public class App
 			return null;
 		}
 		return (String) req.session().attribute(FLASH_MESSAGE_KEY);
+	}
+	
+	private static String captureFlashMessage(Request req) {
+		String message = getFlashMessage(req);
+		if (message != null) {
+			req.session().removeAttribute(FLASH_MESSAGE_KEY);
+		}
+		return message;
 	}
 }
